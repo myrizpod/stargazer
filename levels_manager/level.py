@@ -26,7 +26,8 @@ class Level:
         for link in self.links:
             link.draw()
 
-        l.addmarker(self.link_start, self.link_end, (199,212,225), l.basic)
+        #l.addmarker(self.link_start, self.link_end, (199,212,225), l.basic)
+        l.addbroken(self.link_start, self.link_end, (199,212,225), l.dash,1)
 
     def update(self):
         if pygame.mouse.get_just_pressed()[0]:

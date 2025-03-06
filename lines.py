@@ -48,6 +48,10 @@ def addmarker(start,end,col,func,start_mark=True,end_mark=True):
 def addbroken(start,end,col,func,level):
     v = (end[0]-start[0],end[1]-start[1])
     l = t.dist(0,0,v[0],v[1])
-    v = t.normalize(v,l/2)
-    func((start[0],start[1]),(end[0]+v[0],end[1]+v[1]),col)
-    func((start[0]+v[0],start[1]+v[1]),(end[0]+v[0]*2,end[1]+v[1]*2),col)
+    perp = t.perp_vec(t.normalize(v,2))
+    smol_v = t.normalize(v,2)
+    v = t.normalize(v,(l-5*level)/2)
+    func((start[0],start[1]),(start[0]+v[0],start[1]+v[1]),col)
+    func((end[0]-v[0],end[1]-v[1]),(end[0],end[1]),col)
+    for i in range(level):
+        pygame.draw.line(ct.RENDER_BUFFER,(255,0,0),(start[0]+v[0],start[1]+v[1]),(start[0]+v[0],start[1]+v[1]))

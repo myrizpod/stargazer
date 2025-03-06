@@ -13,7 +13,6 @@ class Game:
         self.actual_level = Level(stars)
 
 
-    
     def draw(self):
         self.actual_level.draw()
         pass

@@ -43,3 +43,11 @@ def addmarker(start,end,col,func,start_mark=True,end_mark=True):
     if end_mark:
         pygame.draw.rect(ct.RENDER_BUFFER,col,pygame.Rect(end[0]-1,end[1]-1,3,3),1,1)
     func((start[0]+v[0],start[1]+v[1]),(end[0]-v[0],end[1]-v[1]),col)
+    
+    
+def addbroken(start,end,col,func,level):
+    v = (end[0]-start[0],end[1]-start[1])
+    l = t.dist(0,0,v[0],v[1])
+    v = t.normalize(v,l/2)
+    func((start[0],start[1]),(end[0]+v[0],end[1]+v[1]),col)
+    func((start[0]+v[0],start[1]+v[1]),(end[0]+v[0]*2,end[1]+v[1]*2),col)

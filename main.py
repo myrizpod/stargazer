@@ -6,12 +6,9 @@
 import pygame
 
 import constants as ct
-import game as g
+from game import Game
 import lines as l
 import background as bg
-
-
-
 
 
 class App:
@@ -21,9 +18,9 @@ class App:
         Called on game startup, all basic stuff
         """
 
-
         #Creating basics of the game
-        self.screen_mult = 6
+        #self.screen_mult = 6
+        self.screen_mult = 3
         self.screen_size = (ct.GAME_DRAW_SIZE_X * self.screen_mult, ct.GAME_DRAW_SIZE_Y * self.screen_mult)
         pygame.init()
         self.running = True
@@ -35,6 +32,8 @@ class App:
         pygame.mixer.init()
         self.end = [0,0]
         self.start = [0,0]
+
+        self.game = Game()
 
         #Starting game loop
         self.loop()
@@ -54,13 +53,21 @@ class App:
 
         pygame.quit()
 
+
     def update(self):
         for event in pygame.event.get():
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_ESCAPE:
+                    pygame.quit()
             if event.type == pygame.QUIT:
                 self.running = False
-        if pygame.mouse.get_just_pressed()[0]:
-            self.start = [pygame.mouse.get_pos()[0]/self.screen_mult,pygame.mouse.get_pos()[1]/self.screen_mult]
+                return
+
+        #if pygame.mouse.get_just_pressed()[0]:
         if pygame.mouse.get_pressed()[0]:
+            self.start = [pygame.mouse.get_pos()[0]/self.screen_mult,pygame.mouse.get_pos()[1]/self.screen_mult]
+        #if pygame.mouse.get_pressed()[0]:
+        if pygame.mouse.get_pressed()[2]:
             self.end = [pygame.mouse.get_pos()[0]/self.screen_mult,pygame.mouse.get_pos()[1]/self.screen_mult]
             
 
@@ -70,6 +77,7 @@ class App:
         pygame.draw.rect(ct.RENDER_BUFFER,(14,4,33),pygame.Rect(0,0,320,180))
         bg.draw_background(0,0)
         l.addmarker(self.start,self.end,(199,212,225),l.basic)
+        self.game.draw()
         pygame.transform.scale_by(ct.RENDER_BUFFER, self.screen_mult, self.screen)
         pygame.display.update()
 

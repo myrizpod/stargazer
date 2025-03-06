@@ -1,0 +1,6 @@
+SIMPLE = "simple"
+DOUBLE = "double"
+TRIPLE = "triple"
+DEMI = "demi"
+BROKEN = "broken"
+SWITCH = "switch"

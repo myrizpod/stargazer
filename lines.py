@@ -35,23 +35,27 @@ def short_dash(start,end,col):
         pygame.draw.line(ct.RENDER_BUFFER,col,(start[0]+v2[0]*(i),start[1]+v2[1]*(i)),(start[0]+v2[0]*(i)+v1[0],start[1]+v2[1]*(i)+v1[1]))
         
         
-def addmarker(start,end,col,func,start_mark=True,end_mark=True):
+def addmarker(start,end,col,func,aditional=None,aditional_func=None,start_mark=True,end_mark=True):
     v = (end[0]-start[0],end[1]-start[1])
     v = t.normalize(v,5)
     if start_mark:
         pygame.draw.rect(ct.RENDER_BUFFER,col,pygame.Rect(start[0]-1,start[1]-1,3,3),1,1)
     if end_mark:
         pygame.draw.rect(ct.RENDER_BUFFER,col,pygame.Rect(end[0]-1,end[1]-1,3,3),1,1)
-    func((start[0]+v[0],start[1]+v[1]),(end[0]-v[0],end[1]-v[1]),col)
+    if aditional!=None:
+        func((start[0]+v[0],start[1]+v[1]),(end[0]-v[0],end[1]-v[1]),col,aditional_func,aditional)
+    else:
+        func((start[0]+v[0],start[1]+v[1]),(end[0]-v[0],end[1]-v[1]),col)
     
     
 def addbroken(start,end,col,func,level):
     v = (end[0]-start[0],end[1]-start[1])
     l = t.dist(0,0,v[0],v[1])
-    perp = t.perp_vec(t.normalize(v,2))
-    smol_v = t.normalize(v,2)
-    v = t.normalize(v,(l-5*level)/2)
+    perp = t.perp_vec(t.normalize(v,3))
+    smol_v = t.normalize(v,3)
+    v = t.normalize(v,(l-3*level-3)/2)
     func((start[0],start[1]),(start[0]+v[0],start[1]+v[1]),col)
     func((end[0]-v[0],end[1]-v[1]),(end[0],end[1]),col)
     for i in range(level):
-        pygame.draw.line(ct.RENDER_BUFFER,(255,0,0),(start[0]+v[0],start[1]+v[1]),(start[0]+v[0],start[1]+v[1]))
+        i+=1
+        pygame.draw.line(ct.RENDER_BUFFER,col,(start[0]+v[0]+smol_v[0]*i+perp[0],start[1]+v[1]+smol_v[1]*i+perp[1]),(start[0]+v[0]+smol_v[0]*i-perp[0],start[1]+v[1]+smol_v[1]*i-perp[1]))

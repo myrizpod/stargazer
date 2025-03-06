@@ -1,4 +1,4 @@
-from star import Star
+from levels_manager.star import Star
 
 class Link:
     def __init__(self, start: Star, end: Star, link_type: str):

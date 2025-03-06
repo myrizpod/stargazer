@@ -60,7 +60,7 @@ class App:
                 return
 
         self.game.update()
-            
+
 
     def draw(self):
         """called anytime the game will try to refresh screen

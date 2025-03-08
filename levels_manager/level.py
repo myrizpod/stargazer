@@ -47,7 +47,6 @@ class Level:
             if not skip:
                 self.links.append(Link(self.activelink[0], self.activelink[1], SIMPLE))
                 self.activelink = [None,None]
-        print(len(self.links))
             
     def find_start_star(self):
         for star in self.stars:

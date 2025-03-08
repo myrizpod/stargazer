@@ -1,6 +1,6 @@
 import pygame
 import constants as ct
-import tools as t
+import maths as t
 
 def basic(start,end,col):
     pygame.draw.line(ct.RENDER_BUFFER,col,start,end)
@@ -35,15 +35,15 @@ def short_dash(start,end,col):
         pygame.draw.line(ct.RENDER_BUFFER,col,(start[0]+v2[0]*(i),start[1]+v2[1]*(i)),(start[0]+v2[0]*(i)+v1[0],start[1]+v2[1]*(i)+v1[1]))
         
         
-def addmarker(start,end,col,func,aditional=None,aditional_func=None,start_mark=True,end_mark=True):
+def add_marker(start, end, col, func, additional_func=None, additional=None, start_mark=True, end_mark=True):
     v = (end[0]-start[0],end[1]-start[1])
     v = t.normalize(v,5)
     if start_mark:
         pygame.draw.rect(ct.RENDER_BUFFER,col,pygame.Rect(start[0]-1,start[1]-1,3,3),1,1)
     if end_mark:
         pygame.draw.rect(ct.RENDER_BUFFER,col,pygame.Rect(end[0]-1,end[1]-1,3,3),1,1)
-    if aditional!=None:
-        func((start[0]+v[0],start[1]+v[1]),(end[0]-v[0],end[1]-v[1]),col,aditional_func,aditional)
+    if additional is not None:
+        func((start[0]+v[0],start[1]+v[1]), (end[0]-v[0],end[1]-v[1]), col, additional_func, additional)
     else:
         func((start[0]+v[0],start[1]+v[1]),(end[0]-v[0],end[1]-v[1]),col)
     

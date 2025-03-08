@@ -39,7 +39,9 @@ class Level:
         if pygame.mouse.get_pressed()[0]:
             self.link_end = [pygame.mouse.get_pos()[0]/ct.SCREEN_MULT,pygame.mouse.get_pos()[1]/ct.SCREEN_MULT]
             self.find_end_star()
-        elif self.activelink[0]!=None and self.activelink[1]!=None and self.activelink[0]!=self.activelink[1]:
+
+        elif self.activelink[0] is not None and \
+                self.activelink[1] is not None and self.activelink[0]!=self.activelink[1]:
             skip  = False
             for link in self.links:
                 if link.start in self.activelink and link.end in self.activelink:

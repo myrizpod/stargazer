@@ -3,6 +3,12 @@ import camera as cam
 from levels_manager.level import Level
 from levels_manager.star import Star
 
+#States
+MAIN_MENU = "mainmenu"
+MAP = "mapmenu"
+IN_LEVEL = "inlevel"
+
+
 class Game:
     def __init__(self):
         self.camera = cam.Camera()
@@ -12,13 +18,20 @@ class Game:
                  Star(0, (170, 80))
                  ]
         self.actual_level = Level(stars)
+        self.state = MAIN_MENU
 
 
     def draw(self):
-        self.actual_level.draw()
+        if self.state == MAP:
+            self.camera.update()
+
+        if self.state == IN_LEVEL:
+            self.actual_level.draw()
         pass
     
     def update(self):
         #self.camera.update(self.player)
-        self.actual_level.update()
+
+        if self.state == IN_LEVEL:
+            self.actual_level.update()
         pass

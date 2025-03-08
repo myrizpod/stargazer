@@ -18,7 +18,7 @@ class Game:
                  Star(0, (170, 80))
                  ]
         self.actual_level = Level(stars)
-        self.state = MAIN_MENU
+        self.state = IN_LEVEL
 
 
     def draw(self):

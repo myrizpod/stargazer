@@ -1,5 +1,6 @@
 
 import pygame
+import pygame.camera
 import constants as ct
 import tools as t
 
@@ -10,21 +11,13 @@ class Camera:
         self.yaw = 0
     
     def update(self,target):
-        self.inputs()
+        if pygame.mouse.get_pressed()[1]:
+            self.inputs()
+        print(self.pitch,self.yaw)
         
     def inputs(self):
-        keys = pygame.key.get_pressed()
-        v = [0,0]
-        if keys[pygame.K_UP]:
-            v[1]-=1
-        if keys[pygame.K_LEFT]:
-            v[0]-=1
-        if keys[pygame.K_DOWN]:
-            v[1]+=1
-        if keys[pygame.K_RIGHT]:
-            v[0]+=1
-        v = t.normalize(v,self.speed)
-        self.pitch+=v[0]
-        self.yaw+=v[1]
+        rel = pygame.mouse.get_rel()
+        self.pitch+= rel[0]
+        self.yaw+= rel[1]
 
     

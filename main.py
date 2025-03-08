@@ -28,6 +28,7 @@ class App:
         ct.CLOCK = pygame.time.Clock()
         self.screen = pygame.display.set_mode(self.screen_size)
         pygame.display.set_caption('Stargazer')
+        self.background = bg.Background()
 
         pygame.mixer.init()
 
@@ -65,8 +66,7 @@ class App:
     def draw(self):
         """called anytime the game will try to refresh screen
         """
-        pygame.draw.rect(ct.RENDER_BUFFER,(14,4,33),pygame.Rect(0,0,320,180))
-        bg.draw_background(0,0)
+        self.background.draw_background(0,0)
         self.game.draw()
         pygame.transform.scale_by(ct.RENDER_BUFFER, self.screen_mult, self.screen)
         pygame.display.update()

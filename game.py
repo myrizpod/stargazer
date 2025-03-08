@@ -8,7 +8,8 @@ class Game:
         self.camera = cam.Camera()
 
         stars = [Star(0, (100,100)),
-                 Star(0, (150, 150))
+                 Star(0, (150, 150)),
+                 Star(0, (170, 80))
                  ]
         self.actual_level = Level(stars)
 

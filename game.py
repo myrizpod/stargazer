@@ -1,7 +1,7 @@
-import pygame
 import camera as cam
 from levels_manager.level import Level
 from levels_manager.star import Star
+from menu import get_main_menu
 
 #States
 MAIN_MENU = "mainmenu"
@@ -18,20 +18,19 @@ class Game:
                  Star(0, (170, 80))
                  ]
         self.actual_level = Level(stars)
-        self.state = IN_LEVEL
+        self.actual_menu = get_main_menu()
+        self.state = MAP
 
 
     def draw(self):
-        if self.state == MAP:
-            self.camera.update()
-
-        if self.state == IN_LEVEL:
+        if self.state == MAIN_MENU:
+            self.actual_menu.draw()
+        elif self.state == IN_LEVEL:
             self.actual_level.draw()
-        pass
     
     def update(self):
-        #self.camera.update(self.player)
-
         if self.state == IN_LEVEL:
             self.actual_level.update()
+        elif self.state == MAP:
+            self.camera.update()
         pass

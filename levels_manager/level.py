@@ -1,11 +1,9 @@
-from math import sqrt
-
 from levels_manager.star import Star
 from levels_manager.link import Link
 from levels_manager.link_types import *
 import pygame
 import constants as ct
-import tools as t
+import maths as t
 
 class Level:
     def __init__(self, all_stars: list[Star]):
@@ -33,8 +31,8 @@ class Level:
         if pygame.mouse.get_pressed()[0]:
             Link(self.link_start, self.link_end, self.actual_link_type, self.additional_link_type).draw()
             #l.addmarker(self.link_start, self.link_end, ct.WHITE, l.addbroken,3,l.dash)
-            better_link_start,better_link_end = l.link_displace(self.link_start, self.link_end)
-            l.addmarker(better_link_start if self.activelink[0]!=None else self.link_start , better_link_end if self.activelink[1]!=None else self.link_end , ct.WHITE, l.addbroken,3,l.dash)
+            #better_link_start,better_link_end = l.link_displace(self.link_start, self.link_end)
+            #l.addmarker(better_link_start if self.activelink[0]!=None else self.link_start , better_link_end if self.activelink[1]!=None else self.link_end , ct.WHITE, l.addbroken,3,l.dash)
 
     def update(self):
         if pygame.mouse.get_just_pressed()[0]:

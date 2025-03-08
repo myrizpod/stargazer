@@ -1,6 +1,6 @@
 import pygame
 import constants as ct
-import tools as t
+import maths as t
 
 def basic(start,end,col):
     pygame.draw.line(ct.RENDER_BUFFER,col,start,end)

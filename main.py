@@ -18,7 +18,7 @@ class App:
         """
 
         #Creating basics of the game
-        self.screen_mult = 6
+        self.screen_mult = 3
         ct.SCREEN_MULT = self.screen_mult
         self.screen_size = (ct.GAME_DRAW_SIZE_X * self.screen_mult, ct.GAME_DRAW_SIZE_Y * self.screen_mult)
         pygame.init()

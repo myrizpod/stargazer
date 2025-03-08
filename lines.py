@@ -64,3 +64,4 @@ def link_displace(start,end):
     v = (end[0]-start[0],end[1]-start[1])
     v = t.normalize(v,8)
     return (start[0]+v[0],start[1]+v[1]),(end[0]-v[0],end[1]-v[1])
+    

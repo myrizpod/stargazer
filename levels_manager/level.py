@@ -30,7 +30,8 @@ class Level:
 
         #l.addmarker(self.link_start, self.link_end, ct.WHITE, l.basic)
         if pygame.mouse.get_pressed()[0]:
-            l.addmarker(self.link_start, self.link_end, ct.WHITE, l.addbroken,3,l.dash) 
+            better_link_start,better_link_end = l.link_displace(self.link_start, self.link_end)
+            l.addmarker(better_link_start if self.activelink[0]!=None else self.link_start , better_link_end if self.activelink[1]!=None else self.link_end , ct.WHITE, l.addbroken,3,l.dash) 
 
     def update(self):
         if pygame.mouse.get_just_pressed()[0]:

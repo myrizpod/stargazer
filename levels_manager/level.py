@@ -14,8 +14,8 @@ class Level:
         self.melody = level_melody
         self.gui = gui.LevelGui(self.melody)
 
-        self.link_end = [pygame.mouse.get_pos()[0]/ct.SCREEN_MULT,pygame.mouse.get_pos()[1]/ct.SCREEN_MULT]
-        self.link_start = [pygame.mouse.get_pos()[0]/ct.SCREEN_MULT,pygame.mouse.get_pos()[1]/ct.SCREEN_MULT]
+        self.link_end = (0,0)
+        self.link_start = (0,0)
         self.active_link = [None, None]
         self.actual_link_type = SIMPLE
         self.additional_link_type = None
@@ -106,38 +106,33 @@ class Level:
     
     
     def read_constellation(self,start_star):
-        self.last_reading_time = pygame.time.get_ticks()
-        self.pointers = [[start_star,None]]
+        if start_star!= None:
+            self.last_reading_time = pygame.time.get_ticks()
+            self.pointers = [[start_star,None]]
         
     def constellation_reading_loop(self):
-        time_diff = (pygame.time.get_ticks()-self.last_reading_time)/1000
+        time_diff = (pygame.time.get_ticks()-self.last_reading_time)/500
+        destruction_list = []
         for p_index in range(len(self.pointers)):
             pointer = self.pointers[p_index]
             if type(pointer[0])==Star:
                 pointer[0].play()
                 for link in self.links:
-                    if link == pointer[1]:
-                        break
-                    if (pointer[0] == link.start_star ):
+                    if (pointer[0] == link.start_star and link != pointer[1]):
                         self.pointers.append([link,0,"start"])
-                    elif (pointer[0] == link.end_star):
+                    elif (pointer[0] == link.end_star and link != pointer[1]):
                         self.pointers.append([link,0,"end"])
-                self.pointers.remove(pointer)
+                destruction_list.append(p_index)
 
             else:
                 pointer[1] += time_diff
                 if pointer[1]>=pointer[0].type[2]:
-                    print("ha")
                     if pointer[2]=="start":
                         self.pointers[p_index] = [pointer[0].end_star,pointer[0]]
                     else:
                         self.pointers[p_index] = [pointer[0].start_star,pointer[0]]
+                        
+        for d in reversed(destruction_list):
+            self.pointers.pop(d)
 
         self.last_reading_time = pygame.time.get_ticks()
-
-        # previous_pointer = self.pointer
-        # self.pointer = (pygame.time.get_ticks() - self.start_time)/1000
-        # for t in self.notes.keys():
-        #     if previous_pointer <= t <= self.pointer:
-        #         for note in self.notes[t].split(","):
-        #             s.SOUNDS[note].play()

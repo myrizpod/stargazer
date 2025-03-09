@@ -1,6 +1,7 @@
 import pygame
 import constants as ct
-import sounds as s
+from sound_manager import sounds as s
+
 import random as r
 
 class Star:

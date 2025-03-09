@@ -8,7 +8,6 @@ import pygame
 import constants as ct
 from game import Game
 
-
 class App:
 
     def __init__(self):
@@ -27,7 +26,6 @@ class App:
         ct.CLOCK = pygame.time.Clock()
         self.screen = pygame.display.set_mode(self.screen_size)
         pygame.display.set_caption('Stargazer')
-
 
         self.game = Game()
 

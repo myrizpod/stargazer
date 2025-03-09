@@ -1,14 +1,13 @@
-import levels_manager.star as s 
+from levels_manager.star import Star
 
 def read_melody(file):
     file = open(file, "r")
     output = {}
     for line in file:
         content = line.split(":")
-        output[int(content[0])] = content[1][:-1]
+        output[float(content[0])] = content[1][:-1]
     file.close()
     return output
-
 
 
 def read_level(file):
@@ -17,6 +16,6 @@ def read_level(file):
     for line in file:
         content = line[:-1].split(",")
         print(content)
-        output.append(s.Star(content[0],(int(content[1]),int(content[2]))))
+        output.append(Star(content[0],(int(content[1]),int(content[2]))))
     file.close()
     return output

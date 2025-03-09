@@ -1,6 +1,6 @@
 
 import pygame
-import sounds as s
+import sound_manager.sounds as s
 
 class Melody:
     def __init__(self,notes):

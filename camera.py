@@ -14,7 +14,7 @@ class Camera:
             self.inputs()
         else:
             pygame.mouse.get_rel()
-        self.pitch %= 1024
+        self.pitch %= ct.MAP_SIZE
         self.yaw = min(max(self.yaw,0),180)
         
     def inputs(self):

@@ -8,7 +8,7 @@ class Background:
         self.NOISE_BUFFER = pygame.Surface((1024, 1024), pygame.OPENGL)
         self.NOISE_BUFFER.blit(background_img)
         self.noise_value_list = [[(self.NOISE_BUFFER.get_at((x,y))[1],self.NOISE_BUFFER.get_at((x,y))[2]) for x in range(1024)] for y in range(1024)]
-            
+
 
     def draw_background(self,pitch,yaw):
         for x in range(0,320):

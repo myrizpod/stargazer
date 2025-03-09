@@ -119,7 +119,6 @@ class Level:
     def constellation_reading_loop(self):
         time_diff = (pygame.time.get_ticks()-self.last_reading_time)/500
         destruction_list = []
-        time_diff = (pygame.time.get_ticks()-self.last_reading_time)/1000
         if self.pointers is None:
             return
         for p_index in range(len(self.pointers)):
@@ -148,10 +147,3 @@ class Level:
 
     def reset_mouse(self):
         self.link_start = [pygame.mouse.get_pos()[0]/ct.SCREEN_MULT, pygame.mouse.get_pos()[1]/ct.SCREEN_MULT]
-
-        # previous_pointer = self.pointer
-        # self.pointer = (pygame.time.get_ticks() - self.start_time)/1000
-        # for t in self.notes.keys():
-        #     if previous_pointer <= t <= self.pointer:
-        #         for note in self.notes[t].split(","):
-        #             s.SOUNDS[note].play()

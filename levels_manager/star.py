@@ -9,7 +9,7 @@ class Star:
         print(sound)
         self.sound = s.SOUNDS[sound]
         self.coordonates = coo
-        chosen_star = r.choice((["resources/star_large.png",6],["resources/star_mid.png",4]))
+        chosen_star = r.choice((["resources/images/star_large.png",6],["resources/images/star_mid.png",4]))
         self.img = pygame.image.load(chosen_star[0])
         self.img_offset = chosen_star[1]
 

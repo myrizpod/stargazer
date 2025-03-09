@@ -2,7 +2,6 @@ from gui import LevelGui
 from levels_manager.star import Star
 from levels_manager.link import Link
 from levels_manager.link_types import *
-from sound_manager.sounds import SOUNDS
 import pygame
 import constants as ct
 import maths as t
@@ -53,6 +52,9 @@ class Level:
             gui_click_result = self.gui.gui_click_input()
             if gui_click_result in (SIMPLE,DOUBLE,DEMI,TRIPLE,QUARTER):
                 self.actual_link_type = gui_click_result
+            elif gui_click_result == "reset":
+                self.links.clear()
+                return False
             elif gui_click_result == "return_to_map":
                 return True
             elif gui_click_result == "no_attribute":
@@ -112,7 +114,7 @@ class Level:
     
     
     def read_constellation(self,start_star):
-        if start_star!= None:
+        if start_star is not None:
             self.last_reading_time = pygame.time.get_ticks()
             self.pointers = [[start_star,None]]
         

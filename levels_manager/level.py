@@ -14,12 +14,15 @@ class Level:
         self.melody = level_melody
         self.gui = gui.LevelGui(self.melody)
 
-        self.link_end = [0,0]
-        self.link_start = [0,0]
+        self.link_end = [pygame.mouse.get_pos()[0]/ct.SCREEN_MULT,pygame.mouse.get_pos()[1]/ct.SCREEN_MULT]
+        self.link_start = [pygame.mouse.get_pos()[0]/ct.SCREEN_MULT,pygame.mouse.get_pos()[1]/ct.SCREEN_MULT]
         self.active_link = [None, None]
         self.actual_link_type = SIMPLE
         self.additional_link_type = None
         self.start_star = None
+        self.last_reading_time = 0
+        
+        self.pointers = []
 
     def get_stars(self):
         return self.stars
@@ -63,18 +66,18 @@ class Level:
                 self.active_link[1] is not None and self.active_link[0]!=self.active_link[1]:
             skip  = False
             for link in self.links:
-                if link.start in self.active_link and link.end in self.active_link:
+                if link.start_star in self.active_link and link.end_star in self.active_link:
                     skip = True
             if not skip:
-                self.links.append(Link(self.active_link[0].coordonates, self.active_link[1].coordonates, self.actual_link_type, self.additional_link_type))
+                self.links.append(Link(self.active_link[0], self.active_link[1], self.actual_link_type, self.additional_link_type))
                 self.active_link = [None, None]
-                
+
         self.melody.playing_loop()
-        #self.constellation_reading_loop()
+        self.constellation_reading_loop()
         if pygame.mouse.get_just_pressed()[2]:
-            #click_star = self.find_star([pygame.mouse.get_pos()[0]/ct.SCREEN_MULT,pygame.mouse.get_pos()[1]/ct.SCREEN_MULT])
+            click_star = self.find_star(pygame.mouse.get_pos()[0]/ct.SCREEN_MULT,pygame.mouse.get_pos()[1]/ct.SCREEN_MULT)
             #self.melody.play()
-            self.read_constellation()
+            self.read_constellation(click_star)
     
     
     
@@ -102,15 +105,39 @@ class Level:
         return None
     
     
-    def read_constellation(self):
-        self.start_time = pygame.time.get_ticks()
-        self.pointers = [[]]
+    def read_constellation(self,start_star):
+        self.last_reading_time = pygame.time.get_ticks()
+        self.pointers = [[start_star,None]]
         
     def constellation_reading_loop(self):
-        if self.pointer<self.duration:
-            previous_pointer = self.pointer
-            self.pointer = (pygame.time.get_ticks() - self.start_time)/1000
-            for t in self.notes.keys():
-                if previous_pointer <= t <= self.pointer:
-                    for note in self.notes[t].split(","):
-                        s.SOUNDS[note].play()
+        time_diff = (pygame.time.get_ticks()-self.last_reading_time)/1000
+        for p_index in range(len(self.pointers)):
+            pointer = self.pointers[p_index]
+            if type(pointer[0])==Star:
+                pointer[0].play()
+                for link in self.links:
+                    if link == pointer[1]:
+                        break
+                    if (pointer[0] == link.start_star ):
+                        self.pointers.append([link,0,"start"])
+                    elif (pointer[0] == link.end_star):
+                        self.pointers.append([link,0,"end"])
+                self.pointers.remove(pointer)
+
+            else:
+                pointer[1] += time_diff
+                if pointer[1]>=pointer[0].type[2]:
+                    print("ha")
+                    if pointer[2]=="start":
+                        self.pointers[p_index] = [pointer[0].end_star,pointer[0]]
+                    else:
+                        self.pointers[p_index] = [pointer[0].start_star,pointer[0]]
+
+        self.last_reading_time = pygame.time.get_ticks()
+
+        # previous_pointer = self.pointer
+        # self.pointer = (pygame.time.get_ticks() - self.start_time)/1000
+        # for t in self.notes.keys():
+        #     if previous_pointer <= t <= self.pointer:
+        #         for note in self.notes[t].split(","):
+        #             s.SOUNDS[note].play()

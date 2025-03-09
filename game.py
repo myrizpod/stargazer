@@ -24,7 +24,7 @@ class Game:
 
         self.actual_level = LEVEL1
         self.actual_menu = get_main_menu()
-        self.state = MAP
+        self.state = IN_LEVEL
 
 
     def draw(self):

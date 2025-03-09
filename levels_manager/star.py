@@ -1,15 +1,19 @@
 import pygame
 import constants as ct
 import sounds as s
+import random as r
 
 class Star:
     def __init__(self, sound: int, coo: tuple[int, int]):
         print(sound)
         self.sound = s.SOUNDS[sound]
         self.coordonates = coo
+        chosen_star = r.choice((["resources/star_large.png",6],["resources/star_mid.png",4]))
+        self.img = pygame.image.load(chosen_star[0])
+        self.img_offset = chosen_star[1]
 
     def draw(self):
-        pygame.draw.circle(ct.RENDER_BUFFER, ct.WHITE, self.coordonates, 5)
+        ct.RENDER_BUFFER.blit(self.img,(self.coordonates[0]-self.img_offset,self.coordonates[1]-self.img_offset))
         
     def play(self):
         self.sound.play()

@@ -1,10 +1,22 @@
+import levels_manager.star as s 
+
 def read_melody(file):
     file = open(file, "r")
     output = {}
     for line in file:
         content = line.split(":")
-        output[content[0]] = content[1][:-1]
+        output[int(content[0])] = content[1][:-1]
     file.close()
     return output
 
-print(read_melody("resources/tutorial.txt"))
+
+
+def read_level(file):
+    file = open(file, "r")
+    output = []
+    for line in file:
+        content = line[:-1].split(",")
+        print(content)
+        output.append(s.Star(content[0],(int(content[1]),int(content[2]))))
+    file.close()
+    return output

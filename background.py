@@ -15,6 +15,8 @@ class Background:
             for y in range(0,180):
                 frame_time = pygame.time.get_ticks()/100
                 p =self.noise_value_list[int(x+pitch)%1024][int(y+yaw)%1024][0]/255 + self.noise_value_list[int(x+pitch+frame_time)%1024][int(y+yaw+frame_time)%1024][1]/255
+                
+                    
                 if p<0.15:
                     ct.RENDER_BUFFER.set_at((x,y),ct.BG_DARK_PURPLE)
                 elif p<0.3:

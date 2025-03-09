@@ -13,4 +13,4 @@ class Link:
         if self.additional_type is None:
             l.add_marker(self.start_pos, self.end_pos, ct.WHITE, self.type[1])
         else:
-            l.add_marker(self.start_pos, self.end_pos, ct.WHITE, self.additional_type, self.type[1], 3)
+            l.add_marker(self.start_pos, self.end_pos, ct.WHITE, self.additional_type[1], self.type[1], self.additional_type[2])

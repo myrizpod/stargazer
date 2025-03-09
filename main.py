@@ -7,7 +7,6 @@ import pygame
 
 import constants as ct
 from game import Game
-import background as bg
 
 
 class App:
@@ -18,18 +17,17 @@ class App:
         """
 
         #Creating basics of the game
-        self.screen_mult = 3
+        self.screen_mult = 6
         ct.SCREEN_MULT = self.screen_mult
         self.screen_size = (ct.GAME_DRAW_SIZE_X * self.screen_mult, ct.GAME_DRAW_SIZE_Y * self.screen_mult)
         pygame.init()
+        pygame.mixer.init()
         self.running = True
         ct.RENDER_BUFFER = pygame.Surface((ct.GAME_DRAW_SIZE_X, ct.GAME_DRAW_SIZE_Y), pygame.OPENGL)
         ct.CLOCK = pygame.time.Clock()
         self.screen = pygame.display.set_mode(self.screen_size)
         pygame.display.set_caption('Stargazer')
-        self.background = bg.Background()
 
-        pygame.mixer.init()
 
         self.game = Game()
 
@@ -65,7 +63,6 @@ class App:
     def draw(self):
         """called anytime the game will try to refresh screen
         """
-        self.background.draw_background(0,0)
         self.game.draw()
         pygame.transform.scale_by(ct.RENDER_BUFFER, self.screen_mult, self.screen)
         pygame.display.update()

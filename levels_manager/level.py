@@ -2,10 +2,11 @@ from gui import LevelGui
 from levels_manager.star import Star
 from levels_manager.link import Link
 from levels_manager.link_types import *
+from levels_manager.level_checker import LevelChecker
 import pygame
 import constants as ct
 import maths as t
-import sound_manager.melodies as m
+
 
 class Level:
     def __init__(self, all_stars: list[Star], level_melody):
@@ -21,10 +22,9 @@ class Level:
         self.actual_link_type = SIMPLE
         self.additional_link_type = None
         self.start_star = None
-        self.victory_timer = 0
-        self.victory_img = pygame.image.load("resources/images/victory.png")
-        self.constelation_melody = None
-        
+        self.last_selectioned_star = None
+        self.level_checker = LevelChecker(level_melody)
+
 
         self.pointers = []
 
@@ -39,13 +39,13 @@ class Level:
         for star in self.stars:
             star.draw()
         for link in self.links:
-            link.draw()
+            if not link.is_broken:
+                link.draw()
 
         if pygame.mouse.get_pressed()[0]:
             Link(self.link_start, self.link_end, self.actual_link_type, self.additional_link_type).draw()
-        if self.victory_timer>=1:
-            self.victory_timer+=1
-            ct.RENDER_BUFFER.blit(self.victory_img,(0,0))
+
+        self.level_checker.draw()
             
         self.gui.draw()
         self.hoover_note()
@@ -53,12 +53,10 @@ class Level:
     def hoover_note(self):
         mouse_pos = (pygame.mouse.get_pos()[0] / ct.SCREEN_MULT, pygame.mouse.get_pos()[1] / ct.SCREEN_MULT)
         star = self.find_star(mouse_pos[0],mouse_pos[1])
-        if star!=None:
+        if star is not None:
             ct.RENDER_BUFFER.blit(self.gui.imgs_melody[star.sound_litteral.replace("#","")[:-1]], (star.coordonates[0]-2, star.coordonates[1]-7))
 
     def update(self):
-        if self.victory_timer>=60:
-            return True
         if pygame.mouse.get_just_pressed()[0]:
             gui_click_result = self.gui.gui_click_input()
             if gui_click_result in (SIMPLE,DOUBLE,DEMI,TRIPLE,QUARTER):
@@ -89,40 +87,30 @@ class Level:
                     skip = True
             if not skip:
                 self.links.append(Link(self.active_link[0], self.active_link[1], self.actual_link_type, self.additional_link_type))
+                self.active_link[1].play()
                 self.active_link = [None, None]
 
-        if self.constelation_melody!=None:
-            self.constelation_melody.playing_loop()
-        
+
         if pygame.mouse.get_just_pressed()[2]:
-            click_star = self.find_star(pygame.mouse.get_pos()[0]/ct.SCREEN_MULT,pygame.mouse.get_pos()[1]/ct.SCREEN_MULT)
-            e = self.constelation_reader(click_star)
-            self.constelation_melody = m.Melody(e)
-            self.constelation_melody.play()
-            if e == self.melody.notes:
-                self.victory()
-            
+            self.level_checker.check(self.find_star(pygame.mouse.get_pos()[0] / ct.SCREEN_MULT,
+                                    pygame.mouse.get_pos()[1] / ct.SCREEN_MULT), self.links)
 
+        return self.level_checker.update()
     
-    def victory(self):
-        self.victory_timer = 1
 
-    
-    
-    
     def find_start_star(self):
         clicked_star = self.find_star(self.link_start[0],self.link_start[1])
         if clicked_star is not None:
-                self.active_link[0] = clicked_star
-                self.link_start = [clicked_star.coordonates[0],clicked_star.coordonates[1]]
+            self.active_link[0] = clicked_star
+            self.link_start = [clicked_star.coordonates[0],clicked_star.coordonates[1]]
         else:
             self.active_link[0] = None
                 
     def find_end_star(self):
         clicked_star = self.find_star(self.link_end[0],self.link_end[1])
         if clicked_star is not None:
-                self.active_link[1] = clicked_star
-                self.link_end = [clicked_star.coordonates[0],clicked_star.coordonates[1]]
+            self.active_link[1] = clicked_star
+            self.link_end = [clicked_star.coordonates[0],clicked_star.coordonates[1]]
         else:
             self.active_link[1] = None
         
@@ -131,28 +119,6 @@ class Level:
             if t.dist(star.coordonates[0],star.coordonates[1],x,y)<10:
                 return star
         return None
-    
-
-
-    def constelation_reader(self,start_star):
-        read_dict = {0:start_star.sound_litteral}
-        c = 0
-        pointers = [[start_star,0,None]]
-        while c<10 and pointers!=[]:
-            c+=1
-            alternative = [pointers[k] for k in range(len(pointers))]
-            for pointer in alternative:
-                for link in self.links:
-                    if link == pointer[2]:
-                        continue
-                    if link.start_star == pointer[0]:
-                        read_dict[float(pointer[1]+link.type[2])] = link.end_star.sound_litteral
-                        pointers.append([link.end_star,pointer[1]+link.type[2],link])
-                    elif link.end_star == pointer[0]:
-                        read_dict[float(pointer[1]+link.type[2])] = link.start_star.sound_litteral
-                        pointers.append([link.start_star,pointer[1]+link.type[2],link])
-                pointers.remove(pointer)
-        return read_dict
 
 
     def reset_mouse(self):

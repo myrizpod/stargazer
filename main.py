@@ -48,13 +48,13 @@ class App:
 
 
     def update(self):
+        if not self.running:
+            pygame.quit()
+
         for event in pygame.event.get():
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_ESCAPE:
-                    pygame.quit()
-            if event.type == pygame.QUIT:
-                self.running = False
-                return
+                    self.running = False
 
         self.game.update()
 

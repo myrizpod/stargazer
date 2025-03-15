@@ -2,10 +2,10 @@ from gui import LevelGui
 from levels_manager.star import Star
 from levels_manager.link import Link
 from levels_manager.link_types import *
-from sound_manager.sounds import SOUNDS
 import pygame
 import constants as ct
 import maths as t
+import sound_manager.melodies as m
 
 class Level:
     def __init__(self, all_stars: list[Star], level_melody):
@@ -21,11 +21,13 @@ class Level:
         self.actual_link_type = SIMPLE
         self.additional_link_type = None
         self.start_star = None
-        self.last_reading_time = 0
+        self.victory_timer = 0
+        self.victory_img = pygame.image.load("resources/images/victory.png")
+        self.constelation_melody = None
+        
 
         self.pointers = []
 
-        self.pointers = None
         self.start_time = None
 
     def get_stars(self):
@@ -39,20 +41,31 @@ class Level:
         for link in self.links:
             link.draw()
 
-        #l.addmarker(self.link_start, self.link_end, ct.WHITE, l.basic)
         if pygame.mouse.get_pressed()[0]:
             Link(self.link_start, self.link_end, self.actual_link_type, self.additional_link_type).draw()
-            #l.addmarker(self.link_start, self.link_end, ct.WHITE, l.addbroken,3,l.dash)
-            #better_link_start,better_link_end = l.link_displace(self.link_start, self.link_end)
-            #l.addmarker(better_link_start if self.activelink[0]!=None else self.link_start , better_link_end if self.activelink[1]!=None else self.link_end , ct.WHITE, l.addbroken,3,l.dash)
+        if self.victory_timer>=1:
+            self.victory_timer+=1
+            ct.RENDER_BUFFER.blit(self.victory_img,(0,0))
             
         self.gui.draw()
+        self.hoover_note()
+        
+    def hoover_note(self):
+        mouse_pos = (pygame.mouse.get_pos()[0] / ct.SCREEN_MULT, pygame.mouse.get_pos()[1] / ct.SCREEN_MULT)
+        star = self.find_star(mouse_pos[0],mouse_pos[1])
+        if star!=None:
+            ct.RENDER_BUFFER.blit(self.gui.imgs_melody[star.sound_litteral.replace("#","")[:-1]], (star.coordonates[0]-2, star.coordonates[1]-7))
 
     def update(self):
+        if self.victory_timer>=60:
+            return True
         if pygame.mouse.get_just_pressed()[0]:
             gui_click_result = self.gui.gui_click_input()
             if gui_click_result in (SIMPLE,DOUBLE,DEMI,TRIPLE,QUARTER):
                 self.actual_link_type = gui_click_result
+            elif gui_click_result == "reset":
+                self.links.clear()
+                return False
             elif gui_click_result == "return_to_map":
                 return True
             elif gui_click_result == "no_attribute":
@@ -78,12 +91,21 @@ class Level:
                 self.links.append(Link(self.active_link[0], self.active_link[1], self.actual_link_type, self.additional_link_type))
                 self.active_link = [None, None]
 
-        self.melody.playing_loop()
-        self.constellation_reading_loop()
+        if self.constelation_melody!=None:
+            self.constelation_melody.playing_loop()
+        
         if pygame.mouse.get_just_pressed()[2]:
             click_star = self.find_star(pygame.mouse.get_pos()[0]/ct.SCREEN_MULT,pygame.mouse.get_pos()[1]/ct.SCREEN_MULT)
-            #self.melody.play()
-            self.read_constellation(click_star)
+            e = self.constelation_reader(click_star)
+            self.constelation_melody = m.Melody(e)
+            self.constelation_melody.play()
+            if e == self.melody.notes:
+                self.victory()
+            
+
+    
+    def victory(self):
+        self.victory_timer = 1
 
     
     
@@ -110,40 +132,28 @@ class Level:
                 return star
         return None
     
-    
-    def read_constellation(self,start_star):
-        if start_star!= None:
-            self.last_reading_time = pygame.time.get_ticks()
-            self.pointers = [[start_star,None]]
-        
-    def constellation_reading_loop(self):
-        time_diff = (pygame.time.get_ticks()-self.last_reading_time)/500
-        destruction_list = []
-        if self.pointers is None:
-            return
-        for p_index in range(len(self.pointers)):
-            pointer = self.pointers[p_index]
-            if type(pointer[0])==Star:
-                pointer[0].play()
+
+
+    def constelation_reader(self,start_star):
+        read_dict = {0:start_star.sound_litteral}
+        c = 0
+        pointers = [[start_star,0,None]]
+        while c<10 and pointers!=[]:
+            c+=1
+            alternative = [pointers[k] for k in range(len(pointers))]
+            for pointer in alternative:
                 for link in self.links:
-                    if (pointer[0] == link.start_star and link != pointer[1]):
-                        self.pointers.append([link,0,"start"])
-                    elif (pointer[0] == link.end_star and link != pointer[1]):
-                        self.pointers.append([link,0,"end"])
-                destruction_list.append(p_index)
+                    if link == pointer[2]:
+                        continue
+                    if link.start_star == pointer[0]:
+                        read_dict[float(pointer[1]+link.type[2])] = link.end_star.sound_litteral
+                        pointers.append([link.end_star,pointer[1]+link.type[2],link])
+                    elif link.end_star == pointer[0]:
+                        read_dict[float(pointer[1]+link.type[2])] = link.start_star.sound_litteral
+                        pointers.append([link.start_star,pointer[1]+link.type[2],link])
+                pointers.remove(pointer)
+        return read_dict
 
-            else:
-                pointer[1] += time_diff
-                if pointer[1]>=pointer[0].type[2]:
-                    if pointer[2]=="start":
-                        self.pointers[p_index] = [pointer[0].end_star,pointer[0]]
-                    else:
-                        self.pointers[p_index] = [pointer[0].start_star,pointer[0]]
-
-        for d in reversed(destruction_list):
-            self.pointers.pop(d)
-
-        self.last_reading_time = pygame.time.get_ticks()
 
     def reset_mouse(self):
         self.link_start = [pygame.mouse.get_pos()[0]/ct.SCREEN_MULT, pygame.mouse.get_pos()[1]/ct.SCREEN_MULT]

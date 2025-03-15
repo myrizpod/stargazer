@@ -7,7 +7,7 @@ import maths as t
 class Camera:
     def __init__(self):
         self.pitch = 0
-        self.yaw = 0
+        self.yaw = 180
     
     def update(self):
         if pygame.mouse.get_pressed()[2]:

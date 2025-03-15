@@ -16,7 +16,7 @@ class Melody:
     def playing_loop(self):
         if self.pointer<self.duration:
             previous_pointer = self.pointer
-            self.pointer = (pygame.time.get_ticks() - self.start_time)/1000
+            self.pointer = (pygame.time.get_ticks() - self.start_time)/500
             for t in self.notes.keys():
                 if previous_pointer <= t <= self.pointer:
                     for note in self.notes[t].split(","):

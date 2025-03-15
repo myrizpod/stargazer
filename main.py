@@ -4,7 +4,6 @@
 #C:\Users\Admin\AppData\Roaming\Python\Python313\Scripts\pyinstaller.exe --onefile -w main.py to get .exe
 
 import pygame
-
 import constants as ct
 from game import Game
 
@@ -26,6 +25,8 @@ class App:
         ct.CLOCK = pygame.time.Clock()
         self.screen = pygame.display.set_mode(self.screen_size)
         pygame.display.set_caption('Stargazer')
+        e = pygame.image.load("resources/images/icon.png")
+        pygame.display.set_icon(e)
 
         self.game = Game()
 

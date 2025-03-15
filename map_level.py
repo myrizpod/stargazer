@@ -16,6 +16,8 @@ class MapLevel:
             
     def load_img(self):
         self.bg_images = [pygame.image.load("resources/images/background_"+str(i+1)+".png") for i in range(2)]
+        self.selected_stars = pygame.image.load("resources/images/star_large.png")
+        self.unselected_stars = pygame.image.load("resources/images/star_mid.png")
             
 
     def add(self, x, y, level: Level):
@@ -29,14 +31,14 @@ class MapLevel:
         new_level = None
         for level, value in self.all_levels.items():
             for star in level.stars:
-                ct.RENDER_BUFFER.blit(value[1][star],
-                        [(star.coordonates[0]/5 - pitch + value[0][0])%ct.MAP_SIZE, star.coordonates[1]/5 - yaw + value[0][1]])
+                ct.RENDER_BUFFER.blit(self.unselected_stars,
+                        [(star.coordonates[0]/5 - pitch + value[0][0])%ct.MAP_SIZE - 1, star.coordonates[1]/5 - yaw + value[0][1] - 1])
 
             mouse_coo = [pygame.mouse.get_pos()[0] / ct.SCREEN_MULT, pygame.mouse.get_pos()[1] / ct.SCREEN_MULT]
             if value[0][0] < (mouse_coo[0] + pitch)%ct.MAP_SIZE < value[0][0] + 50 and value[0][1] < mouse_coo[1] + yaw < value[0][1] + 50:
-                #pygame.draw.rect(ct.RENDER_BUFFER, ct.WHITE, ((value[0][0]-pitch)%ct.MAP_SIZE, value[0][1]-yaw, 50, 50), 1, 1)
                 for star in level.stars:
-                    pygame.draw.circle(ct.RENDER_BUFFER,ct.WHITE,[(star.coordonates[0]/5 - pitch + value[0][0])%ct.MAP_SIZE+1, star.coordonates[1]/5 - yaw + value[0][1]+1],4.99,1)
+                    ct.RENDER_BUFFER.blit(self.selected_stars,
+                        [(star.coordonates[0]/5 - pitch + value[0][0])%ct.MAP_SIZE - 3, star.coordonates[1]/5 - yaw + value[0][1] - 3])
                 if pygame.mouse.get_pressed()[0]:
                     new_level = level
                     

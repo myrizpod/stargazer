@@ -18,7 +18,10 @@ class LevelChecker:
                 if self.victory_timer >= self.constelation_melody.duration*15:
                     ct.RENDER_BUFFER.blit(self.victory_img,(0,0))
         if self.tried_melody is not None:
-            draw_melody(self.tried_melody.notes)
+            self.draw_melody(self.tried_melody.notes)
+            
+    def draw_melody(self,notes):
+        pass
 
 
     def update(self):

@@ -7,10 +7,8 @@ class MapLevel:
     def __init__(self):
         self.all_levels = {}
         self.all_images = []
-        for i in range(3):
-            self.all_images.append(pygame.image.load("resources/images/star_small_"+str(i+1)+".png"))
         self.bg_elts = []
-        for i in range(0,1024,64):
+        for i in range(0,1536,64):
             self.bg_elts.append(r.randint(0,1))
         self.load_img()
             
@@ -21,10 +19,7 @@ class MapLevel:
             
 
     def add(self, x, y, level: Level):
-        img_per_star = {}
-        for star in level.stars:
-            img_per_star[star] = r.choice(self.all_images)
-        self.all_levels[level] = [(x, y), img_per_star]
+        self.all_levels[level] = [(x, y)]
 
 
     def draw(self, pitch, yaw):
@@ -42,9 +37,9 @@ class MapLevel:
                 if pygame.mouse.get_pressed()[0]:
                     new_level = level
                     
-        pygame.draw.rect(ct.RENDER_BUFFER,(14,15,44),(0,340-yaw,320,20))
+        pygame.draw.rect(ct.RENDER_BUFFER,(14,15,44),(0,430-yaw*1.5,320,20))
         for i in range(len(self.bg_elts)):
-            ct.RENDER_BUFFER.blit(self.bg_images[self.bg_elts[i]],((i*64 - pitch)%ct.MAP_SIZE-64,300 - yaw))
+            ct.RENDER_BUFFER.blit(self.bg_images[self.bg_elts[i]],((i*64 - pitch*1.5)%ct.MAP_SIZE-64,400 - yaw*1.5))
             
         
         

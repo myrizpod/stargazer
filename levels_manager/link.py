@@ -1,5 +1,3 @@
-from sqlalchemy import false
-
 import lines as l
 import constants as ct
 import levels_manager.star
